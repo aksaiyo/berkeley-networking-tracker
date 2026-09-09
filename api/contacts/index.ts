@@ -8,7 +8,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     if (req.method === 'GET') {
-      const params = new URLSearchParams({ select: '*', order: `${safeSort(req.query.sort)},${req.query.direction === 'asc' ? 'asc' : 'desc'}` })
+      const params = new URLSearchParams({ select: '*', order: `${safeSort(req.query.sort)}.${req.query.direction === 'asc' ? 'asc' : 'desc'}` })
       const search = typeof req.query.search === 'string' ? req.query.search.trim() : ''
       const priority = typeof req.query.priority === 'string' ? req.query.priority : ''
       if (search) params.set('or', `(name.ilike.*${escapeFilter(search)}*,company.ilike.*${escapeFilter(search)}*,role.ilike.*${escapeFilter(search)}*)`)
