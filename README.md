@@ -2,7 +2,7 @@
 
 BearLink is a private networking tracker for the people you want to stay connected with at Berkeley. It combines a responsive React interface, a Node.js API, Neon Managed Better Auth, the Neon Data API, and PostgreSQL row-level security so each user can see and change only their own contacts.
 
-> **Live app:** Add the production Vercel URL here after deployment.
+> **Live app:** https://berkeley-networking-tracker-five.vercel.app
 
 ## Product walkthrough
 
@@ -62,8 +62,8 @@ The browser uses only the public HTTPS Auth and Data API endpoint names. Contact
 Prerequisites: Node.js 20+, pnpm or npm, and a Neon project with Managed Better Auth and the Data API enabled.
 
 ```bash
-git clone <your-public-repository-url>
-cd <repository-directory>
+git clone https://github.com/aksaiyo/berkeley-networking-tracker.git
+cd berkeley-networking-tracker
 pnpm install
 cp .env.example .env.local
 ```
@@ -121,7 +121,7 @@ pnpm test
 pnpm build
 ```
 
-The automated suite verifies that empty names and invalid priorities fail, valid records are normalized, and empty update payloads are rejected. After running it, paste a screenshot of the passing output here for grading evidence.
+The automated suite verifies that empty names and invalid priorities fail, valid records are normalized, and empty update payloads are rejected. The final deployment gate passed all four tests, ESLint, TypeScript type-checking, and the Vite production build.
 
 ### Two-account privacy verification
 
@@ -138,7 +138,7 @@ Record sanitized screenshots or a short recording of this test and add them to t
 ## Deploy to Vercel
 
 1. Push this repository to a public GitHub repository.
-2. Import the repository into Vercel; the included `vercel.json` selects Vite and Node.js 22 for the API functions.
+2. Import the repository into Vercel; the included `vercel.json` selects Vite, and Vercel automatically detects the TypeScript API functions.
 3. Add `NEXT_PUBLIC_NEON_AUTH_URL` and `NEXT_PUBLIC_NEON_DATA_API_URL` in Vercel project settings.
 4. Do not add `DATABASE_URL` unless a server-only migration workflow explicitly needs it.
 5. Deploy and add the resulting production domain to Neon Auth trusted origins.
