@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { AuthView, NeonAuthUIProvider, useAuthData } from '@neondatabase/auth-ui'
+import { AuthUIContext, AuthView, NeonAuthUIProvider } from '@neondatabase/auth-ui'
 import {
   ArrowDownAZ, ArrowUpAZ, CalendarDays, ChevronDown, LogOut,
   MapPin, Pencil, Plus, Search, ShieldCheck, Trash2, UserRound, UsersRound, X,
@@ -22,7 +22,8 @@ export default function App() {
 }
 
 function SessionGate() {
-  const session = useAuthData({ queryFn: () => authClient.getSession(), cacheKey: 'bearlink-session' })
+  const { hooks } = useContext(AuthUIContext)
+  const session = hooks.useSession()
   const [authMode, setAuthMode] = useState<'sign-in' | 'sign-up'>('sign-in')
 
   if (!isNeonConfigured) return <SetupScreen />
