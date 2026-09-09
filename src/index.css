@@ -23,3 +23,28 @@ button { cursor: pointer; }
 .text-balance { text-wrap: balance; }
 
 :focus-visible { outline: 3px solid rgba(253, 181, 21, .55); outline-offset: 2px; }
+
+.contact-field {
+  color-scheme: light;
+  border: 2px solid #94a3b8;
+  background: #fff;
+  color: #071c39;
+  caret-color: #071c39;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .06);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.contact-field::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
+
+.contact-field:focus {
+  border-color: #176fbd;
+  box-shadow: 0 0 0 3px rgba(23, 111, 189, .22);
+}
+
+.contact-field option {
+  background: #fff;
+  color: #071c39;
+}
