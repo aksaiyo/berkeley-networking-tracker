@@ -21,7 +21,7 @@ Add the required production screenshots here after connecting Neon and deploying
 
 ## Features
 
-- Email/password sign-up, sign-in, session handling, and sign-out
+- Email/password sign-up, OTP email verification, sign-in, session handling, and sign-out
 - Private contact creation, viewing, editing, and deletion
 - Search by name, company, or role
 - Priority filtering and sorting by date, name, company, or priority
@@ -69,8 +69,9 @@ cp .env.example .env.local
 ```
 
 1. In Neon, enable Managed Better Auth with email/password authentication.
+   Require OTP email verification and enable verification emails on sign-up and sign-in.
 2. Enable the Data API with Neon Auth authentication.
-3. Run `database/migrations/001_create_contacts.sql` in the Neon SQL editor.
+3. Run the SQL files in `database/migrations` in numeric order in the Neon SQL editor.
 4. Put the branch's public Auth and Data API HTTPS URLs in `.env.local`.
 5. Add `http://localhost:5173` to Neon Auth trusted origins.
 6. Run the frontend with `pnpm dev`.
@@ -113,6 +114,8 @@ RLS is enabled and forced on `contacts`. Four separate policies apply to the `au
 - `DELETE` uses `auth.user_id() = user_id`.
 
 The API never accepts `user_id` in its validation schema. Postgres fills it from the verified JWT and RLS rejects cross-user access even if someone crafts a direct HTTP request.
+
+Anonymous and `PUBLIC` table privileges are explicitly revoked. Neon Managed Auth requires a six-digit email OTP before sign-in, sends verification codes on sign-up and attempted sign-in, and the frontend blocks any existing unverified session from reaching contact data.
 
 ## Tests
 

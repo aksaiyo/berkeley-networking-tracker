@@ -11,3 +11,6 @@ coverage/
 *.tsbuildinfo
 .DS_Store
 .neon
+
+.vercel
+.env*

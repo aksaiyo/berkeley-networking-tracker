@@ -1,0 +1,10 @@
+.git/
+.vercel/
+.neon
+.env*
+.pacman-venv/
+pacman_assignment/
+node_modules/
+dist/
+coverage/
+*.log

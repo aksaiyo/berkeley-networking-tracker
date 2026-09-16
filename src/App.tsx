@@ -15,7 +15,7 @@ const emptyForm: ContactInput = { name: '', company: '', role: '', where_met: ''
 
 export default function App() {
   return (
-    <NeonAuthUIProvider authClient={authClient} redirectTo="/">
+    <NeonAuthUIProvider authClient={authClient} redirectTo="/" emailVerification={{ otp: true }}>
       <SessionGate />
     </NeonAuthUIProvider>
   )
@@ -25,10 +25,31 @@ function SessionGate() {
   const { hooks } = useContext(AuthUIContext)
   const session = hooks.useSession()
   const [authMode, setAuthMode] = useState<'sign-in' | 'sign-up'>('sign-in')
+  const routeAuthPath = window.location.pathname.startsWith('/auth/')
+    ? window.location.pathname.split('/').filter(Boolean).at(-1) ?? null
+    : null
+  const needsEmailVerification = Boolean(session.data && !session.data.user.emailVerified)
+
+  useEffect(() => {
+    if (!needsEmailVerification || routeAuthPath === 'email-verification') return
+    const email = session.data?.user.email
+    if (email) window.location.replace(`/auth/email-verification?email=${encodeURIComponent(email)}`)
+  }, [needsEmailVerification, routeAuthPath, session.data?.user.email])
 
   if (!isNeonConfigured) return <SetupScreen />
   if (session.isPending) return <FullPageLoader />
-  if (!session.data) {
+  if (needsEmailVerification && routeAuthPath !== 'email-verification') return <FullPageLoader />
+  if (!session.data || needsEmailVerification) {
+    const authPath = needsEmailVerification ? 'email-verification' : routeAuthPath ?? authMode
+    const heading = authPath === 'email-verification' ? 'Verify your email'
+      : authPath === 'forgot-password' ? 'Reset your password'
+      : authPath === 'sign-up' ? 'Create your account'
+      : 'Sign in to your network'
+    const showModeSwitch = authPath === 'sign-in' || authPath === 'sign-up'
+    function changeAuthMode(mode: 'sign-in' | 'sign-up') {
+      if (routeAuthPath) window.history.replaceState({}, '', '/')
+      setAuthMode(mode)
+    }
     return (
       <div className="min-h-screen bg-[#071c39] lg:grid lg:grid-cols-[1.05fr_.95fr]">
         <section className="relative hidden overflow-hidden p-16 text-white lg:flex lg:flex-col lg:justify-between">
@@ -48,12 +69,16 @@ function SessionGate() {
             <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-[0_24px_80px_rgba(7,28,57,.12)] sm:p-9">
               <div className="mb-7">
                 <p className="text-sm font-semibold text-[#176fbd]">Welcome to BearLink</p>
-                <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#071c39]">{authMode === 'sign-in' ? 'Sign in to your network' : 'Create your account'}</h2>
+                <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#071c39]">{heading}</h2>
+                {authPath === 'email-verification' && <p className="mt-3 text-sm leading-6 text-slate-600">Enter the six-digit code sent to your email. Unverified accounts cannot open or change contact data.</p>}
               </div>
-              <AuthView path={authMode} />
-              <button className="mt-6 w-full text-center text-sm font-medium text-slate-600 hover:text-[#176fbd]" onClick={() => setAuthMode(authMode === 'sign-in' ? 'sign-up' : 'sign-in')}>
-                {authMode === 'sign-in' ? 'New here? Create an account' : 'Already have an account? Sign in'}
-              </button>
+              <AuthView path={authPath} otpSeparators={1} />
+              {needsEmailVerification && <button type="button" className="mt-4 w-full text-center text-sm font-semibold text-slate-600 hover:text-[#176fbd]" onClick={() => { void authClient.signOut().then(() => window.location.assign('/')) }}>
+                Sign out and use a different email
+              </button>}
+              {showModeSwitch && <button className="mt-6 w-full text-center text-sm font-medium text-slate-600 hover:text-[#176fbd]" onClick={() => changeAuthMode(authPath === 'sign-in' ? 'sign-up' : 'sign-in')}>
+                {authPath === 'sign-in' ? 'New here? Create an account' : 'Already have an account? Sign in'}
+              </button>}
             </div>
           </div>
         </main>
