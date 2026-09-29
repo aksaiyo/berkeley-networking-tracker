@@ -12,12 +12,18 @@ BearLink is a private networking tracker for the people you want to stay connect
 4. Edit or delete a contact; refresh the browser to confirm the record persists.
 5. Sign out from the account control in the header.
 
-Add the required production screenshots here after connecting Neon and deploying:
+### Production evidence
 
-- Sign-in and sign-out
-- Creating, editing, deleting, and refreshing a contact
-- Invalid input showing a safe error
-- Two-account privacy verification
+The following sanitized evidence was recorded against the live Vercel deployment:
+
+| Rubric requirement | Evidence |
+|---|---|
+| Sign in and sign out | [Watch the sign-in/sign-out recording](docs/evidence/sign-in-and-out.mp4) |
+| Create, edit, refresh, and delete a contact | [Watch the contact workflow recording](docs/evidence/contact-crud-and-refresh.mp4) |
+| User A cannot access User B's contacts | [Watch the two-account isolation recording](docs/evidence/two-account-isolation.mp4) |
+| Invalid input fails safely | The screenshot below shows the required name field rejecting an empty submission. |
+
+![Empty contact name rejected by browser validation](docs/evidence/invalid-input-validation.png)
 
 ## Features
 
@@ -126,6 +132,15 @@ pnpm build
 
 The automated suite verifies that empty names and invalid priorities fail, valid records are normalized, and empty update payloads are rejected. The final deployment gate passed all four tests, ESLint, TypeScript type-checking, and the Vite production build.
 
+Latest automated test evidence:
+
+```text
+✓ shared/contact.test.ts (4 tests)
+
+Test Files  1 passed (1)
+Tests       4 passed (4)
+```
+
 ### Two-account privacy verification
 
 1. Sign in as User A and create a uniquely named contact.
@@ -136,7 +151,7 @@ The automated suite verifies that empty names and invalid priorities fail, valid
 6. Confirm no row is returned or changed.
 7. Sign back in as User A and confirm the contact remains unchanged.
 
-Record sanitized screenshots or a short recording of this test and add them to the walkthrough section. Do not capture tokens, cookies, connection strings, or secrets.
+The completed production recording is linked in the walkthrough evidence table above. It demonstrates that each account sees only its own contact list; no tokens, cookies, connection strings, or secrets are shown.
 
 ## Deploy to Vercel
 

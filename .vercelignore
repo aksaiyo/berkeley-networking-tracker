@@ -7,4 +7,5 @@ pacman_assignment/
 node_modules/
 dist/
 coverage/
+docs/evidence/*.mp4
 *.log
